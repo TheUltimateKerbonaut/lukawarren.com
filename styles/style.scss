@@ -1,0 +1,52 @@
+@import "_variables.scss";
+@import "_sidebar.scss";
+@import "_header.scss";
+@import "_progress.scss";
+@import "_navbar.scss";
+@import "_technologies.scss";
+@import "_work.scss";
+@import "_contact.scss";
+
+html
+{
+    scroll-behavior: smooth;
+}
+
+body
+{
+    background-color: $backgroundColour;
+}
+
+h1, h2, h3, h4, h5, h6
+{
+    line-height: 1.2;
+    font-weight: 700;
+}
+
+p
+{
+    font-family: $fontSmall;
+}
+
+h1
+{
+    line-height: 1.2;
+    font-size: $sizeHuge;
+    font-family: $fontHuge;
+
+    @include tiny-down { font-size: 4em; }
+}
+
+h2
+{
+    font-size: $sizeLarge;
+    @include tiny-down { font-size: 2.8em; }
+    font-family: $fontLarge;
+}
+
+.navbar-toggler { border: none;}
+
+.btn-primary
+{
+    color: white !important;
+}

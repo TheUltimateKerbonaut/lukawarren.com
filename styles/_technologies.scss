@@ -1,0 +1,63 @@
+#technologies-container
+{
+    background-color: white;
+    padding-top: 6em;
+    padding-bottom: 6em;
+
+    #grid-technologies
+    {
+        display: none;
+        @include md-up { display: flex; }
+    }
+
+    #slider-technologies
+    {
+        .card
+        {
+            height: 20em !important;
+        }
+
+        .carousel-inner { width: auto; }
+        .carousel-indicators
+        {
+            margin-top: 0.5em;
+            li:not(.active)
+            {
+                background-color: $backgroundColour;
+            }
+            li.active
+            {
+                background-color: gray;
+            }
+        }
+        @include md-up { display: none; }
+    }
+    
+    .card
+    {
+        height: 87%;
+        margin-top: 2em;
+        box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.2);
+        .card-img-top
+        {
+            margin-top: 0.2em;
+            font-size: 5em;
+        }
+
+        img
+        {
+            width: 2.3em;
+            height: auto;
+            margin-left: auto;
+            margin-right: auto;;
+        }
+
+    }
+
+    .card:hover
+    {
+        transform: scale(1.02);
+        transition-property: transform;
+        transition-duration: 0.2s;
+    }
+}

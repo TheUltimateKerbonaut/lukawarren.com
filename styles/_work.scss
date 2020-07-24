@@ -1,0 +1,32 @@
+#work-container
+{
+    padding-top: 2em;
+    padding-bottom: 2em;
+    background-color: $backgroundColour;
+
+    .col-sm-12
+    {
+        margin-bottom: 2em;
+    }
+
+    .card
+    {
+        margin-top: 2em;
+        height: 94%;
+        border: none;
+        box-shadow: 10px 10px 5px 0px rgba(1,1,1,0.2);
+        .card-img-top
+        {
+            height: 10em;
+            margin: 0;
+            object-fit: cover;
+        }
+    }
+
+    .card:hover
+    {
+        transform: scale(1.02);
+        transition-property: transform;
+        transition-duration: 0.2s;
+    }
+}

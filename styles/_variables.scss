@@ -1,0 +1,43 @@
+$backgroundColour: #121212;
+
+$fontHuge: "Poppins", sans-serif;
+$sizeHuge: 5em;
+
+$fontLarge: "Poppins", Arial, sans-serif;
+$sizeLarge: 3.1em;
+
+$fontMedium: "Poppins", Arial, sans-serif;
+$sizeMedium: 1.5em;
+
+$fontSmall: "Poppins", Arial, sans-serif;
+$sizeSmall: 1em;
+
+
+@mixin tiny-down
+{
+    @media (max-width: 350px) { @content; }
+}
+
+// Small devices (landscape phones, 576px and up)
+@mixin sm-up
+{
+    @media (min-width: 576px) { @content; }
+}
+
+// Medium devices (tablets, 768px and up)
+@mixin md-up
+{
+    @media (min-width: 768px) { @content; }
+}
+
+// Large devices (desktops, 992px and up)
+@mixin lg-up
+{
+    @media (min-width: 992px) { @content; }
+}
+
+// Extra large devices (large desktops, 1200px and up)
+@mixin xl-up
+{
+    @media (min-width: 1200px) { @content; }
+}
