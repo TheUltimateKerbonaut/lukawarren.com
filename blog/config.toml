@@ -1,5 +1,5 @@
 baseurl = "https://www.lukawarren.com/blog/"
-title = "Luka Warren"
+title = "My blog"
 theme = "hugo-coder"
 languagecode = "en"
 defaultcontentlanguage = "en"

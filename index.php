@@ -24,6 +24,7 @@
 				<a target="_blank" href="mailto:hey@lukawarren.com" class="fas fa-envelope"></a><br />
 
 				<a id="ctaButton" class="btn btn-lg btn-outline-light rounded-0">See my work</a>
+				<a href="blog/" class="btn btn-lg btn-outline-light rounded-0">Read my blog</a>
 
 			</div>
 		</div>
