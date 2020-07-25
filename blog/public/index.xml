@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Luka Warren</title>
+    <link>https://www.lukawarren.com/blog/</link>
+    <description>Recent content on Luka Warren</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Fri, 24 Jul 2020 17:38:12 +0100</lastBuildDate>
+    
+	<atom:link href="https://www.lukawarren.com/blog/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Cybersploit 2 CTF walkthrough</title>
+      <link>https://www.lukawarren.com/blog/posts/cybersploit-2/</link>
+      <pubDate>Fri, 24 Jul 2020 17:38:12 +0100</pubDate>
+      
+      <guid>https://www.lukawarren.com/blog/posts/cybersploit-2/</guid>
+      <description>Cybersploit 2 is a fun boot2root on VulnHub. It&amp;rsquo;s quite an enjoyable box, and whilst user is really rather easy, getting root is quite an interesting affair (at least I found it to be).
+Initial foothold Let&amp;rsquo;s scan the box and see what ports are open with nmap -sC -sV -p- 192.168.123.131:
+Starting Nmap 7.80 ( https://nmap.org ) at 2020-07-24 19:54 BST Nmap scan report for 192.168.123.131 Host is up (0.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://www.lukawarren.com/blog/about/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://www.lukawarren.com/blog/about/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

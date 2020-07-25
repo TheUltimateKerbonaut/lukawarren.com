@@ -1,0 +1,59 @@
+baseurl = "https://www.lukawarren.com/blog/"
+title = "Luka Warren"
+theme = "hugo-coder"
+languagecode = "en"
+defaultcontentlanguage = "en"
+
+paginate = 20
+canonifyurls = true
+
+pygmentsstyle = "bw"
+pygmentscodefences = true
+pygmentscodefencesguesssyntax = true
+
+#disqusShortname = "luka"
+
+[params]
+    author = "Luka Warren"
+    info = "A blog about whatever I happen to be doing"
+    description = "A little blog about the things I do"
+    keywords = "blog,programming,cybersecurity,pentesting"
+    #avatarurl = "images/avatar.jpg"
+
+    favicon_32 = "/img/favicon-32x32.png"
+    favicon_16 = "/img/favicon-16x16.png"
+
+    footercontent = "<a href='https://www.lukawarren.com/'>Go back to lukawarren.com</a>"
+
+    hidecredits = false
+    hidecopyright = false
+
+    rtl = false
+
+    math = true
+	
+    #custom_css = ["css/custom.css"]
+
+	colorscheme = "light"
+	
+# Social links
+[[params.social]]
+    name = "Github"
+    icon = "fab fa-github fa-2x"
+    weight = 1
+    url = "https://github.com/theultimatekerbonaut/"
+[[params.social]]
+    name = "Email"
+    icon = "fas fa-envelope fa-2x"
+    weight = 1
+    url = "mailto:hey@lukawarren.com"
+
+# Menu links
+[[menu.main]]
+    name = "Posts"
+    weight = 1
+    url  = "/blog/posts/"
+#[[menu.main]]
+#    name = "About"
+#    weight = 2
+#    url = "/blog/about/"
