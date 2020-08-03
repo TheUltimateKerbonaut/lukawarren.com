@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>https://www.lukawarren.com/blog/</loc>
+    <lastmod>2020-07-31T10:32:16+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.lukawarren.com/blog/posts/node/</loc>
+    <lastmod>2020-07-31T10:32:16+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.lukawarren.com/blog/posts/</loc>
+    <lastmod>2020-07-31T10:32:16+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.lukawarren.com/blog/posts/election/</loc>
+    <lastmod>2020-07-25T09:34:23+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.lukawarren.com/blog/posts/cybersploit-2/</loc>
+    <lastmod>2020-07-24T17:38:12+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.lukawarren.com/blog/categories/</loc>
+  </url>
+  
+  <url>
+    <loc>https://www.lukawarren.com/blog/tags/</loc>
+  </url>
+  
+</urlset>

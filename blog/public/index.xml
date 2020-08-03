@@ -6,10 +6,30 @@
     <description>Recent content on My blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Fri, 24 Jul 2020 17:38:12 +0100</lastBuildDate>
+    <lastBuildDate>Fri, 31 Jul 2020 10:32:16 +0100</lastBuildDate>
     
 	<atom:link href="https://www.lukawarren.com/blog/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Node CTF walkthrough</title>
+      <link>https://www.lukawarren.com/blog/posts/node/</link>
+      <pubDate>Fri, 31 Jul 2020 10:32:16 +0100</pubDate>
+      
+      <guid>https://www.lukawarren.com/blog/posts/node/</guid>
+      <description>Node was a machine on Hackthebox a few years ago and was later put up on Vulnhub. I&amp;rsquo;ve only recently got around to doing it, but it was really rather interesting with its full-stack Javascript environment, something that is becoming increasingly common with the likes of NodeJS, and I found it quite enjoyable. In my opinion, it&amp;rsquo;s one of the more fun boxes on Hackthebox, and I encourage you to give it a go if you haven&amp;rsquo;t already.</description>
+    </item>
+    
+    <item>
+      <title>eLection 1 CTF walkthrough</title>
+      <link>https://www.lukawarren.com/blog/posts/election/</link>
+      <pubDate>Sat, 25 Jul 2020 09:34:23 +0100</pubDate>
+      
+      <guid>https://www.lukawarren.com/blog/posts/election/</guid>
+      <description>Another enjoyable CTF, eLection: 1 promises to be an OSCP-like VM with medium level difficulty. It&amp;rsquo;s quite a straightforward box, but nonetheless a good excuse to sharpen your skills.
+Enumeration Lets see what ports are open with nmap -T4 -A 192.168.123.132:
+Starting Nmap 7.80 ( https://nmap.org ) at 2020-07-25 10:01 BST Nmap scan report for 192.168.123.132 Host is up (0.00034s latency). Not shown: 998 closed ports PORT STATE SERVICE VERSION 22/tcp open ssh OpenSSH 7.</description>
+    </item>
     
     <item>
       <title>Cybersploit 2 CTF walkthrough</title>
