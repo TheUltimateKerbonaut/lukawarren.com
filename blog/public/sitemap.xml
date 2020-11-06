@@ -3,17 +3,27 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://www.lukawarren.com/blog/</loc>
-    <lastmod>2020-07-31T10:32:16+01:00</lastmod>
+    <loc>https://www.lukawarren.com/blog/posts/dx11-hooking/</loc>
+    <lastmod>2020-10-31T10:01:56+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://www.lukawarren.com/blog/posts/node/</loc>
-    <lastmod>2020-07-31T10:32:16+01:00</lastmod>
+    <loc>https://www.lukawarren.com/blog/</loc>
+    <lastmod>2020-10-31T10:01:56+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://www.lukawarren.com/blog/posts/</loc>
+    <lastmod>2020-10-31T10:01:56+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.lukawarren.com/blog/posts/wireworld/</loc>
+    <lastmod>2020-09-02T21:01:55+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.lukawarren.com/blog/posts/node/</loc>
     <lastmod>2020-07-31T10:32:16+01:00</lastmod>
   </url>
   

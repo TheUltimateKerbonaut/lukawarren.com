@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Language" content="en">
+
+    <meta name="author" content="Luka Warren">
+    <meta name="description" content="Creating a Wire World Cellula Automaton for fun">
+    <meta name="keywords" content="blog,programming,cybersecurity,pentesting">
+
+    
+
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Cellula Automata - Creating Wire World"/>
+<meta name="twitter:description" content="Creating a Wire World Cellula Automaton for fun"/>
+
+    <meta property="og:title" content="Cellula Automata - Creating Wire World" />
+<meta property="og:description" content="Creating a Wire World Cellula Automaton for fun" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.lukawarren.com/blog/posts/wireworld/" />
+<meta property="article:published_time" content="2020-09-02T21:01:55+01:00" />
+<meta property="article:modified_time" content="2020-09-02T21:01:55+01:00" />
+
+
+    
+      <base href="https://www.lukawarren.com/blog/posts/wireworld/">
+    
+    <title>
+  Cellula Automata - Creating Wire World · My blog
+</title>
+
+    
+      <link rel="canonical" href="https://www.lukawarren.com/blog/posts/wireworld/">
+    
+
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather:300,700%7CSource+Code+Pro:400,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.0/css/all.css" integrity="sha384-Bfad6CLCknfcloXFOyFnlgtENryhrpZCe29RTifKEixXQZ38WheV+i/6YWSzkz3V" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha256-l85OmPOjvil/SOvVt3HnSSjzF1TUMyT9eV0c2BzEGzU=" crossorigin="anonymous" />
+
+    
+      
+      
+      
+	  <link rel="stylesheet" href="https://www.lukawarren.com/blog/css/coder.min.3219ef62ae52679b7a9c19043171c3cd9f523628c2a65f3ef247ee18836bc90b.css" media="screen" />
+    
+
+    
+
+    
+
+    
+
+    
+
+    <link rel="icon" type="image/png" href="https://www.lukawarren.com/img/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="https://www.lukawarren.com/img/favicon-16x16.png" sizes="16x16">
+
+    <meta name="generator" content="Hugo 0.74.3" />
+  </head>
+
+  
+  
+  <body class="colorscheme-light"
+        onload=""
+  >
+    <main class="wrapper">
+      <nav class="navigation">
+  <section class="container">
+    <a class="navigation-title" href="https://www.lukawarren.com/blog/">
+      My blog
+    </a>
+    
+    <input type="checkbox" id="menu-toggle" />
+    <label class="menu-button float-right" for="menu-toggle"><i class="fas fa-bars"></i></label>
+    <ul class="navigation-list">
+      
+        
+          <li class="navigation-item">
+            <a class="navigation-link" href="https://www.lukawarren.com/blog/posts/">Posts</a>
+          </li>
+        
+      
+      
+    </ul>
+    
+  </section>
+</nav>
+
+
+      <div class="content">
+        
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">Cellula Automata - Creating Wire World</h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fas fa-calendar"></i>
+              <time datetime='2020-09-02T21:01:55&#43;01:00'>
+                September 2, 2020
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fas fa-clock"></i>
+              3-minute read
+            </span>
+          </div>
+          
+          
+        </div>
+      </header>
+
+      <div>
+        
+        <p>You might have heard of cellular automata. They consist of a grid of cells, where each cell has a finite number of states. It is the rules that govern these states that create a variety of interesting effects, from Conway&rsquo;s Game of Life, <a href="https://en.wikipedia.org/wiki/Cellular_automaton">giving rise to civilisations, wars and factories</a>, to <a href="https://en.wikipedia.org/wiki/Wireworld">Wire World</a>, a cellular automaton designed to simulate, at least in some respect, transistors.</p>
+<p>So when my internet went out unexpectedly for an entire day, and having wanted to do something for a fun <a href="https://itch.io/jam/olc-codejam-2020">&ldquo;code jam&rdquo;</a>, I decided to make my own version of Wire World, to see what all the fuss was about. I&rsquo;m quite pleased with the results, and it certainly killed the time I was hoping for. You can view it <a href="https://github.com/TheUltimateKerbonaut/PixelWire">on GitHub</a> if you&rsquo;d like.</p>
+<p><img src="https://www.lukawarren.com/blog/img/wireworld/Logo.png" alt="Wire world screenshot"></p>
+<h1 id="a-computer-within-a-computer">A computer within a computer</h1>
+<p>Wire World is really quite simple. There are four cells, and they act accordingly:</p>
+<ul>
+<li>Empty cells do nothing</li>
+<li>Electron heads (which are blue) turn into tails</li>
+<li>Electron tails (red) turn into conductors</li>
+<li>Conductors (yellow) turn into heads if exactly one or two neighbouring cells are heads, else stay the same</li>
+</ul>
+<p>I used C++ and a tiny little framework called the <a href="https://github.com/OneLoneCoder/olcPixelGameEngine">Pixel Game Engine</a> for graphics, and quickly had something in about half an hour. In fact the code for the actual simulation was really rather simple - this is all it is:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">// Copy array to output
+for (int x = 0; x &lt; nWorldWidth; ++x)
+	for (int y = 0; y &lt; nWorldHeight; ++y)
+		m_WorldLogic[x][y] = m_World[x][y];
+
+// Iterate through each cell
+for (int x = 0; x &lt; nWorldWidth; ++x)
+	for (int y = 0; y &lt; nWorldHeight; ++y)
+	{
+		auto cellState = m_World[x][y].state;
+		if (cellState == Cell::CONDUCTOR)
+		{
+			// Determine amount of neighbours that are heads
+			int nHeads = 0;
+			for (int headX = x - 1; headX &lt;= x + 1; ++headX)
+			{
+				for (int headY = y - 1; headY &lt;= y + 1; ++headY)
+				{
+					if (headX &lt; 0 || headY &lt; 0 || headX &gt;= nWorldWidth || headY &gt;= nWorldHeight) continue;
+					else if (m_World[headX][headY].state == Cell::HEAD) nHeads++;
+				}
+			}
+
+			// Switch state if nessecary
+			if (nHeads == 1 || nHeads == 2) cellState = Cell::HEAD;
+		}
+		else if (cellState == Cell::HEAD) cellState = Cell::TAIL;
+		else if (cellState == Cell::TAIL) cellState = Cell::CONDUCTOR;
+
+		m_WorldLogic[x][y].state = cellState;
+	}
+
+// Copy output to array
+for(int x = 0; x &lt; nWorldWidth; ++x)
+	for (int y = 0; y &lt; nWorldHeight; ++y)
+		m_World[x][y] = m_WorldLogic[x][y];
+</code></pre></div><p>I added some basic controls, kept track of performance somewhat and added the ability to save and load simulations next. Finally, this was my result:</p>
+<p><img src="https://www.lukawarren.com/blog/img/wireworld/screenshot.png" alt="Another Wire world screenshot"></p>
+<h1 id="layers-of-complexity">Layers of complexity</h1>
+<p>I read a bit more about Wire World. The above screenshot was an example of an AND gate, and OR gates and XOR gates are trivial too.</p>
+<p><img src="https://www.lukawarren.com/blog/img/wireworld/or.gif" alt="A Wire world OR gate">
+<img src="https://www.lukawarren.com/blog/img/wireworld/xor.gif" alt="A Wire world XOR gate">
+<img src="https://www.lukawarren.com/blog/img/wireworld/and.gif" alt="A Wire world AND gate"></p>
+<p>Just like how some people make mini CPUs inside Minecraft, often with fully capable APUs and sometimes even multiple cores, it turned out there was <a href="https://www.quinapalus.com/wi-index.html">an entire guide</a> on creating a Turing-complete computer inside of Wire World! I dread to think about the amount of time it&rsquo;d take to make such a thing, but it really is a testament to how a simple ruleset can create astonishingly complex things.</p>
+<p><img src="https://www.lukawarren.com/blog/img/wireworld/computer.gif" alt="A Wire world computer"></p>
+<p>Hopefully, you&rsquo;ve been inspired to make your own cellular automata. There&rsquo;s plenty of interesting ones to implement, or perhaps you could experiment with your own rules. Some sort of population on a world map sounds like an interesting idea, or perhaps a liquid in a cave, complete with foam and spray. It&rsquo;s always a fun thing to do as a proof of concept when working with a new language or machine.</p>
+
+      </div>
+
+
+      <footer>
+        
+
+
+        
+        
+        
+      </footer>
+    </article>
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script type="text/javascript" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js" id="MathJax-script"></script>
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [
+          ['$', '$'], ['\\(', '\\)']
+        ],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
+  </script>
+  </section>
+
+      </div>
+
+      
+  <footer class="footer">
+    <section class="container">
+      
+        <p><a href='https://www.lukawarren.com/'>Go back to lukawarren.com</a></p>
+      
+      
+        ©
+        
+        2020
+         Luka Warren 
+      
+      
+         · 
+        Powered by <a href="https://gohugo.io/">Hugo</a> & <a href="https://github.com/luizdepra/hugo-coder/">Coder</a>.
+      
+      
+    </section>
+  </footer>
+
+    </main>
+
+    
+
+    
+
+    
+
+  </body>
+
+</html>

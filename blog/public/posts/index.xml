@@ -6,10 +6,30 @@
     <description>Recent content in Posts on My blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Fri, 31 Jul 2020 10:32:16 +0100</lastBuildDate>
+    <lastBuildDate>Sat, 31 Oct 2020 10:01:56 +0000</lastBuildDate>
     
 	<atom:link href="https://www.lukawarren.com/blog/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Hooking DirectX 11 to create an overlay for modding</title>
+      <link>https://www.lukawarren.com/blog/posts/dx11-hooking/</link>
+      <pubDate>Sat, 31 Oct 2020 10:01:56 +0000</pubDate>
+      
+      <guid>https://www.lukawarren.com/blog/posts/dx11-hooking/</guid>
+      <description>After messing around with DirectX 11 the other week, I became curious as to how overlays, such as Fraps or those in game mods, worked. So I decided to create my own overlay for Saints Row the Third, a game which used the API, and draw a debug panel with ImGui.
+It turns out that to modify the drawing process in a game, I&amp;rsquo;d have to hook into D3D11, where the drawing loop typically goes along the lines of:</description>
+    </item>
+    
+    <item>
+      <title>Cellula Automata - Creating Wire World</title>
+      <link>https://www.lukawarren.com/blog/posts/wireworld/</link>
+      <pubDate>Wed, 02 Sep 2020 21:01:55 +0100</pubDate>
+      
+      <guid>https://www.lukawarren.com/blog/posts/wireworld/</guid>
+      <description>You might have heard of cellular automata. They consist of a grid of cells, where each cell has a finite number of states. It is the rules that govern these states that create a variety of interesting effects, from Conway&amp;rsquo;s Game of Life, giving rise to civilisations, wars and factories, to Wire World, a cellular automaton designed to simulate, at least in some respect, transistors.
+So when my internet went out unexpectedly for an entire day, and having wanted to do something for a fun &amp;ldquo;code jam&amp;rdquo;, I decided to make my own version of Wire World, to see what all the fuss was about.</description>
+    </item>
     
     <item>
       <title>Node CTF walkthrough</title>

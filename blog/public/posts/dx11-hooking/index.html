@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Language" content="en">
+
+    <meta name="author" content="Luka Warren">
+    <meta name="description" content="Using ImGui and Detours, drawing a debugging overlay for use in any DirectX 11 game.">
+    <meta name="keywords" content="blog,programming,cybersecurity,pentesting">
+
+    
+
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Hooking DirectX 11 to create an overlay for modding"/>
+<meta name="twitter:description" content="Using ImGui and Detours, drawing a debugging overlay for use in any DirectX 11 game."/>
+
+    <meta property="og:title" content="Hooking DirectX 11 to create an overlay for modding" />
+<meta property="og:description" content="Using ImGui and Detours, drawing a debugging overlay for use in any DirectX 11 game." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.lukawarren.com/blog/posts/dx11-hooking/" />
+<meta property="article:published_time" content="2020-10-31T10:01:56+00:00" />
+<meta property="article:modified_time" content="2020-10-31T10:01:56+00:00" />
+
+
+    
+      <base href="https://www.lukawarren.com/blog/posts/dx11-hooking/">
+    
+    <title>
+  Hooking DirectX 11 to create an overlay for modding · My blog
+</title>
+
+    
+      <link rel="canonical" href="https://www.lukawarren.com/blog/posts/dx11-hooking/">
+    
+
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather:300,700%7CSource+Code+Pro:400,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.0/css/all.css" integrity="sha384-Bfad6CLCknfcloXFOyFnlgtENryhrpZCe29RTifKEixXQZ38WheV+i/6YWSzkz3V" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha256-l85OmPOjvil/SOvVt3HnSSjzF1TUMyT9eV0c2BzEGzU=" crossorigin="anonymous" />
+
+    
+      
+      
+      
+	  <link rel="stylesheet" href="https://www.lukawarren.com/blog/css/coder.min.3219ef62ae52679b7a9c19043171c3cd9f523628c2a65f3ef247ee18836bc90b.css" media="screen" />
+    
+
+    
+
+    
+
+    
+
+    
+
+    <link rel="icon" type="image/png" href="https://www.lukawarren.com/img/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="https://www.lukawarren.com/img/favicon-16x16.png" sizes="16x16">
+
+    <meta name="generator" content="Hugo 0.74.3" />
+  </head>
+
+  
+  
+  <body class="colorscheme-light"
+        onload=""
+  >
+    <main class="wrapper">
+      <nav class="navigation">
+  <section class="container">
+    <a class="navigation-title" href="https://www.lukawarren.com/blog/">
+      My blog
+    </a>
+    
+    <input type="checkbox" id="menu-toggle" />
+    <label class="menu-button float-right" for="menu-toggle"><i class="fas fa-bars"></i></label>
+    <ul class="navigation-list">
+      
+        
+          <li class="navigation-item">
+            <a class="navigation-link" href="https://www.lukawarren.com/blog/posts/">Posts</a>
+          </li>
+        
+      
+      
+    </ul>
+    
+  </section>
+</nav>
+
+
+      <div class="content">
+        
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">Hooking DirectX 11 to create an overlay for modding</h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fas fa-calendar"></i>
+              <time datetime='2020-10-31T10:01:56Z'>
+                October 31, 2020
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fas fa-clock"></i>
+              6-minute read
+            </span>
+          </div>
+          
+          
+        </div>
+      </header>
+
+      <div>
+        
+        <p><img src="https://www.lukawarren.com/blog/img/dx11-hooking/ImGui.png" alt="ImGui overlay over Saints Row the Third"></p>
+<p>After messing around with DirectX 11 the other week, I became curious as to how overlays, such as Fraps or those in game mods, worked. So I decided to create my own overlay for Saints Row the Third, a game which used the API, and draw a debug panel with ImGui.</p>
+<p>It turns out that to modify the drawing process in a game, I&rsquo;d have to hook into D3D11, where the drawing loop typically goes along the lines of:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">ID3D11Device::ClearRenderTargetView(...) // Clear screen
+ID3D11DeviceContext::Draw(...) // Draw stuff
+IDXGISwapChain::Present(...) // Present the rendered image onto the screen
+</code></pre></div><p>The main goal was to retrieve a pointer to the game&rsquo;s <code>IDXGISwapChain</code>, and then use it inside the game&rsquo;s rendering process to draw stuff.</p>
+<p>The best function for this would be <code>IDXGISwapChain::Present</code>, where the underlying function looked something like:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">HRESULT(__stdcall* IDXGISwapChainPresent)(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT Flags)
+{
+	...
+}
+</code></pre></div><p>If I could execute my own code inside that function when it was called, I could render whatever I pleased, before resuming control to DirectX. The process went a little something like:</p>
+<ul>
+<li>Use a dummy D3D11 device to get the address of IDXGISwapChainPresent</li>
+<li>Trampoline hook the function</li>
+<li>Inside the function, get a copy of the device and swap chain</li>
+<li>Redirect input as well to handle mouse and keyboard events</li>
+<li>Draw my overlay every frame before handing back control</li>
+</ul>
+<h1 id="getting-a-foothold">Getting a foothold</h1>
+<p>The first step was to create a new C++ application that compiled to a DLL and could be injected into the process.</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">BOOL APIENTRY DllMain(HMODULE hModule, DWORD ulReasonForCall, LPVOID lpReserved)
+{
+	// Sanity check
+	if (!GetModuleHandle(L&#34;SaintsRowTheThird_DX11.exe&#34;)) return FALSE;
+
+    switch (ulReasonForCall)
+    {
+        case DLL_PROCESS_ATTACH:
+			// Spawn new thread
+            CloseHandle(CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)SpawnConsoleThread, hModule, 0, nullptr));
+        break;
+        case DLL_THREAD_ATTACH:
+
+        break;
+        case DLL_THREAD_DETACH:
+
+        break;
+        case DLL_PROCESS_DETACH:
+
+        break;
+    }
+
+    return TRUE;
+}
+</code></pre></div><p>Inside my new thread, I spawned a command prompt and redirected stdout and stderr for debugging purposes, then checked D3D11 was actually present.</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">DWORD WINAPI SpawnConsoleThread(HMODULE hModule)
+{
+	// Allocate a new console for the calling process
+	AllocConsole();
+
+	// Redirect stdout and stderr
+	FILE* fp;
+	freopen_s(&amp;fp, &#34;CONOUT$&#34;, &#34;w&#34;, stdout);
+	freopen_s(&amp;fp, &#34;CONOUT$&#34;, &#34;w&#34;, stderr);
+	
+	// Find DirectX 11 DLL
+	HANDLE processHandle = GetModuleHandle(L&#34;d3d11&#34;);
+	if (!processHandle) return false;
+</code></pre></div><h1 id="getting-address-of-idxgiswapchainpresent">Getting address of IDXGISwapChain::Present</h1>
+<p>To redirect the function, I first had to know its location in memory (in the code below, stored in <code>fnIDXGISwapChainPresent</code>). This could be done by creating a dummy DirectX device and then walking the VMT from the address of the swap chain.</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">	// Basic swap chain description
+	DXGI_SWAP_CHAIN_DESC sd{ 0 };
+	sd.BufferCount = 1;
+	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+	sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	sd.OutputWindow = GetDesktopWindow();
+	sd.Windowed = TRUE;
+	sd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+	sd.SampleDesc.Count = 1;
+
+	// Create device and swap chain
+	ID3D11Device* pDummyDevice = nullptr;
+	IDXGISwapChain* pDummySwapchain = nullptr;
+	HRESULT hr = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, nullptr, 0, D3D11_SDK_VERSION, &amp;sd, &amp;pDummySwapchain, &amp;pDummyDevice, nullptr, nullptr);
+	if (FAILED(hr))
+	{
+		// Error checking...
+	}
+
+	// Calculate address of IDXGISwapChain::Present from address of swapchain
+	void** pVMT = *(void***)pDummySwapchain;
+	fnIDXGISwapChainPresent = (IDXGISwapChainPresent)(pVMT[8]); // 8 is the magic number
+
+	// Clean up DirectX
+	pDummyDevice-&gt;Release();
+	pDummySwapchain-&gt;Release();
+</code></pre></div><h1 id="trampoline-hooking-idxgiswapchainpresent">Trampoline hooking IDXGISwapChain::Present</h1>
+<p>Hooking works by dynamically intercepting function calls and replacing a few instructions with a jump to our own function. This can get pretty low level, but thankfully Microsoft has had a <a href="https://www.microsoft.com/en-us/research/project/detours/">Detours API</a> since 2002, that is still actively maintained and works with Windows 10. This is best illustrated like this:
+<img src="https://raw.githubusercontent.com/wiki/microsoft/Detours/Images/Detours_ovr_Technical_Figure_2.png" alt="Trampoline diagram"></p>
+<p>Thankfully, this made it quite easy to make my own Present function:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">	DetourTransactionBegin();
+	DetourUpdateThread(GetCurrentThread());
+	DetourAttach(&amp;(LPVOID&amp;)fnIDXGISwapChainPresent, (PBYTE)IDXGISwapChain_Present);
+	DetourTransactionCommit();
+	
+	// Keep DLL alive
+	while (true)
+	{
+		
+	}
+
+	// Clean up console and thread
+	fclose(fp);
+	FreeConsole();
+	FreeLibraryAndExitThread(hModule, 0);
+	return 0;
+}
+</code></pre></div><p>The custom function could grab the pointer to the swap chain, then initialise Direct X and what-not if necessary, then begin rendering.</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">HRESULT __stdcall IDXGISwapChain_Present(IDXGISwapChain* pChain, UINT SyncInterval, UINT Flags)
+{
+	if (!bGraphicsInitialised)
+	{
+		// Init Direct X
+		if (!InitDirectXAndInput(pChain)) return fnIDXGISwapChainPresent(pChain, SyncInterval, Flags);
+		
+		// Init ImGui
+		...
+		
+		bGraphicsInitialised = true;
+	}
+	
+	// Render ImGui and hand back control
+	...
+	
+}
+</code></pre></div><h1 id="direct-x-initialisation">Direct X initialisation</h1>
+<p>Getting the device, device context and window from the swap chain was surprisingly easy.</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">bool InitDirectXAndInput(IDXGISwapChain* pChain)
+{
+	// Get swap chain
+	pSwapchain = pChain;
+
+	// Get device and context
+	HRESULT hr = pSwapchain-&gt;GetDevice(__uuidof(ID3D11Device), (PVOID*)&amp;pDevice);
+	if (FAILED(hr))
+	{
+		std::cerr &lt;&lt; &#34;Failed to get device from swapchain&#34; &lt;&lt; std::endl;
+		return false;
+	}
+	pDevice-&gt;GetImmediateContext(&amp;pContext);
+
+	// Get window from swap chain description
+	DXGI_SWAP_CHAIN_DESC swapchainDescription;
+	pSwapchain-&gt;GetDesc(&amp;swapchainDescription);
+	hWindow = swapchainDescription.OutputWindow;
+
+	// Use SetWindowLongPtr to modify window behaviour and get input
+	wndProcHandlerOriginal = (WNDPROC)SetWindowLongPtr(hWindow, GWLP_WNDPROC, (LONG_PTR)hWndProc);
+	
+	// Print resolution as a test
+	std::cout &lt;&lt; &#34;Successfully initialised DirectX - resolution &#34; 
+			&lt;&lt; swapchainDescription.BufferDesc.Width &lt;&lt; &#34;x&#34; 
+			&lt;&lt; swapchainDescription.BufferDesc.Height &lt;&lt; std::endl;
+	return true;
+}
+</code></pre></div><p>The most interesting part was with <code>hWindow = swapchainDescription.OutputWindow</code> and <code>(WNDPROC)SetWindowLongPtr(hWindow, GWLP_WNDPROC, (LONG_PTR)hWndProc)</code>, where I got the window and used it to modify its behaviour, allowing me to process input in my own callback for ImGui.</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">LRESULT CALLBACK hWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	// Process input and pass to ImGui
+	if (ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam))
+		return true;
+
+	return CallWindowProc(wndProcHandlerOriginal, hWnd, uMsg, wParam, lParam);
+}
+</code></pre></div><h1 id="setting-up-imgui">Setting up ImGui</h1>
+<p>To draw, ImGui needed a reference to the window, the device, the device context, as well as an <code>ID3D11RenderTargetView</code>, which could be created by the device, assuming a back buffer was present.</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">// Init ImGui
+ImGui::CreateContext();
+ImGuiIO&amp; io = ImGui::GetIO(); (void)io;
+io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+		
+// Setup rendering and IO
+ImGui_ImplWin32_Init(hWindow);
+ImGui_ImplDX11_Init(pDevice, pContext);
+ImGui::GetIO().ImeWindowHandle = hWindow;
+
+// Create render target view for rendering
+ID3D11Texture2D* pBackBuffer;
+pChain-&gt;GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&amp;pBackBuffer);
+HRESULT hr = pDevice-&gt;CreateRenderTargetView(pBackBuffer, NULL, &amp;pRenderTargetView);
+if (FAILED(hr))
+{ 
+	std::cerr &lt;&lt; &#34;Failed to create render target view&#34; &lt;&lt; std::endl; 
+	return fnIDXGISwapChainPresent(pChain, SyncInterval, Flags);
+}
+pBackBuffer-&gt;Release();
+</code></pre></div><h1 id="finally-rendering">Finally rendering</h1>
+<p>Now all that was left to do was, in my own <code>IDXGISwapChain_Present</code> function, render ImGui every frame with my own <code>ID3D11RenderTargetView</code>, before passing back control to the actual <code>IDXGISwapChain::Present</code>.</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">// Render ImGui
+ImGui_ImplDX11_NewFrame();
+ImGui_ImplWin32_NewFrame();
+
+ImGui::NewFrame();
+bool bShow = true;
+ImGui::ShowDemoWindow(&amp;bShow);
+ImGui::EndFrame();
+
+ImGui::Render();
+
+pContext-&gt;OMSetRenderTargets(1, &amp;pRenderTargetView, NULL);
+ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
+return fnIDXGISwapChainPresent(pChain, SyncInterval, Flags);
+</code></pre></div><p>I just had to inject the DLL into Saints Row the Third and everything worked nicely.</p>
+<p><img src="https://www.lukawarren.com/blog/img/dx11-hooking/Injection.png" alt="Injecting the DLL"></p>
+<h1 id="conclusion">Conclusion</h1>
+<p>Creating an overlay in a DirectX 11 application isn&rsquo;t especially difficult, and will work across  the majority of titles. As long as you can hook the <code>IDXGISwapChain::Present</code> function and extract the swap chain, device, etc, you can do pretty much whatever you want. Future ideas could include:</p>
+<ul>
+<li>Extracting the projection and view matrices to render 3D models in the game world.</li>
+<li>Hooking other functions such as <code>ID3D11Device::CreatePixelShader</code> to modify game shaders and create interesting effects.</li>
+</ul>
+
+      </div>
+
+
+      <footer>
+        
+
+
+        
+        
+        
+      </footer>
+    </article>
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script type="text/javascript" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js" id="MathJax-script"></script>
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [
+          ['$', '$'], ['\\(', '\\)']
+        ],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
+  </script>
+  </section>
+
+      </div>
+
+      
+  <footer class="footer">
+    <section class="container">
+      
+        <p><a href='https://www.lukawarren.com/'>Go back to lukawarren.com</a></p>
+      
+      
+        ©
+        
+        2020
+         Luka Warren 
+      
+      
+         · 
+        Powered by <a href="https://gohugo.io/">Hugo</a> & <a href="https://github.com/luizdepra/hugo-coder/">Coder</a>.
+      
+      
+    </section>
+  </footer>
+
+    </main>
+
+    
+
+    
+
+    
+
+  </body>
+
+</html>
