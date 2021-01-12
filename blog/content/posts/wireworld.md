@@ -12,7 +12,7 @@ series: []
 
 You might have heard of cellular automata. They consist of a grid of cells, where each cell has a finite number of states. It is the rules that govern these states that create a variety of interesting effects, from Conway's Game of Life, [giving rise to civilisations, wars and factories](https://en.wikipedia.org/wiki/Cellular_automaton), to [Wire World](https://en.wikipedia.org/wiki/Wireworld), a cellular automaton designed to simulate, at least in some respect, transistors.
 
-So when my internet went out unexpectedly for an entire day, and having wanted to do something for a fun ["code jam"](https://itch.io/jam/olc-codejam-2020), I decided to make my own version of Wire World, to see what all the fuss was about. I'm quite pleased with the results, and it certainly killed the time I was hoping for. You can view it [on GitHub](https://github.com/TheUltimateKerbonaut/PixelWire) if you'd like.
+So when my internet went out unexpectedly for an entire day, and having wanted to do something for a fun ["code jam"](https://itch.io/jam/olc-codejam-2020), I decided to make my own version of Wire World, to see what all the fuss was about. I'm quite pleased with the results, and it certainly killed the time I was hoping for. You can view it [on GitHub](https://github.com/lukawarren/PixelWire) if you'd like.
 
 ![Wire world screenshot](/img/wireworld/Logo.png)
 

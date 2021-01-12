@@ -20,7 +20,7 @@
 				<h1>LUKA WARREN</h1>
 				<h3>All-round programmer and full stack developer</h3>
 
-				<a target="_blank" href="https://github.com/TheUltimateKerbonaut" class="fab fa-github"></a>
+				<a target="_blank" href="https://github.com/lukawarren" class="fab fa-github"></a>
 				<a target="_blank" href="mailto:hey@lukawarren.com" class="fas fa-envelope"></a><br />
 
 				<a id="ctaButton" class="btn btn-lg btn-outline-light rounded-0">See my work</a>
@@ -361,7 +361,7 @@
 								I worked on a hobbyist game engine with OpenGL, using a miriad of graphical techniques and
 								following industry standards. Check it out on GitHub!
 							</p>
-							<a target="_blank" href="https://github.com/TheUltimateKerbonaut/HobbyGL" class="mt-auto btn btn-lg btn-primary rounded-0">Go to project</a>
+							<a target="_blank" href="https://github.com/lukawarren/HobbyGL" class="mt-auto btn btn-lg btn-primary rounded-0">Go to project</a>
 						</div>
 					</div>
 				</div>
@@ -374,7 +374,7 @@
 							<p class="card-text">
 								I built a cycle-accurate GameBoy emulator as a passion project. It supports numerous games, is fully open source, and uses modern C++.
 							</p>
-							<a target="_blank" href="https://github.com/TheUltimateKerbonaut/Pixelboy" class="mt-auto btn btn-lg btn-primary rounded-0">Go to project</a>
+							<a target="_blank" href="https://github.com/lukawarren/Pixelboy" class="mt-auto btn btn-lg btn-primary rounded-0">Go to project</a>
 						</div>
 					</div>
 				</div>
@@ -394,7 +394,7 @@
 								<li>Numerous smaller projects</li>
 
 							</ul>
-							<a target="_blank" href="https://github.com/TheUltimateKerbonaut" class="mt-auto btn btn-lg btn-primary rounded-0">Go to GitHub</a>
+							<a target="_blank" href="https://github.com/lukawarren" class="mt-auto btn btn-lg btn-primary rounded-0">Go to GitHub</a>
 						</div>
 					</div>
 				</div>
